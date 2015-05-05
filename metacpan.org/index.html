@@ -24,6 +24,7 @@ function getParameterByName(name) {
       var searchme = getParameterByName("q");
       var fakeMouse = $("#fm");
       var searchBox = $("#search-input");
+      var annoyBox = $("#link_to_task_kensho");
 
       var button = getParameterByName("lucky") ? $("#search-lucky") : $("#search-button");
 
@@ -31,19 +32,37 @@ function getParameterByName(name) {
 	      $("body").css("cursor", "wait");
 	      fakeMouse.animate({top: 0, left: 0});
 	      fakeMouse.show();
+              annoyBox.html("<b>Click the search box</b>");
 	      fakeMouse.animate({top:  searchBox.position().top + 95, // this is too magic, find out why it doesn't work!
 				 left: searchBox.position().left}, 1500, 'swing', function() {
+		      annoyBox.html("<b>Input your search</b>");
 		      $("#search-input").typed({
-			strings: ["Let me CPAN That for you", searchme + "^1000"],
+			strings: [ searchme + "^1000"],
 			typeSpeed: 0,
 			callback: function() {
-				fakeMouse.animate({top: button.position().top + 95, left: button.position().left + 40}, 900, 'swing', function(){button.click()});
+				annoyBox.html("<b>Click the button</b>");
+				fakeMouse.animate({top: button.position().top + 95,
+						 left: button.position().left + 40}, 900, 'swing', function(){
+						 annoyBox.html("<b>It's not that hard!</b>"); fakeMouse.animate({}, 900, 'fast', function() {button.click()}); 
+				});
 			}
 		      });
 		});
 
       } else {
-         // we're making one!
+         $("#search-form").removeAttr("action");
+          $("#search-button").click(function(e) {
+		e.preventDefault();
+		var url = "http://lmctfy.org/?&q="+searchBox.val();
+
+		annoyBox.html("<b>Copy</b> this URL: <a href='"+url+"'>"+url+"</a>");
+         });
+        $("#search-lucky").click(function(e) {
+		e.preventDefault();
+		var url = "http://lmctfy.org/?lucky=1&q="+searchBox.val();
+
+		annoyBox.html("<b>Copy</b> this URL: <a href='"+url+"'>"+url+"</a>");
+         });
       }
   });
 </script>
@@ -56,22 +75,10 @@ function getParameterByName(name) {
                     <li class="active">
                         <a href="/"><img src="/static/icons/metacpan-icon.png" />                            Home                        </a>
                     </li>
-                    <li class="">
-                        <a href="#"><i class="fa fa-history"></i>                            Recent                        </a>
-                    </li>
-                    <li class="hidden-xs">
-                        <a href="/faq.html"><i class="fa fa-question"></i>                            FAQ                        </a>
-                    </li>
-                    <li class="hidden-xs">
+                   <li class="hidden-xs">
                         <a href="https://github.com/CPAN-API/metacpan-web/issues"><i class="fa fa-github-alt"></i>                            Github Issues                        </a>
                     </li>
-                    <li class="hidden-xs">
-                        <a href="#"><i class="fa fa-rss"></i>                            News                        </a>
-                    </li>
-                    <li class="hidden-xs">
-                        <a href="#"><i class="fa fa-rocket"></i>                            Lab                        </a>
-                    </li>
-                </ul>
+               </ul>
            </div>
         </nav> 
 
@@ -82,13 +89,12 @@ function getParameterByName(name) {
 			  <a href="/" class="big-logo" alt="meta::cpan"></a>
 			  <form action="http://metacpan.org/search" id="search-form">
 			    <input type="text" name="q" size="41" autofocus="autofocus" id="search-input" class="form-control home-search-input">
-			    <input type="hidden" name="size" id="size" value="20">
 			    <br>
 			    <button type="submit" class="btn search-btn" id="search-button">Search the CPAN</button>
 			    <button type="submit" class="btn search-btn" name="lucky" value="1" id="search-lucky">I'm Feeling Lucky</button>
 			  </form>
 			    <br>
-			  <div id="link_to_task_kensho" class="alert alert-info" ><strong>New to CPAN?</strong> Maybe take a look at <a href="/pod/Task::Kensho">Task::Kensho!</a></div>
+			  <div id="link_to_task_kensho" class="alert alert-info"><b>Making a new LMCTFY?</b>  Input the text and then click a button. </div>
 			</div>
                 </div>
             </div>
