@@ -8,6 +8,46 @@
         <link href="/_asset/425ffcd15d6d6663d3e11bd84ae07ca9.css" rel="stylesheet" type="text/css">
         <link href="/_asset_less/75f7c14f2868851843062a5b4b8e05c6.css" rel="stylesheet" type="text/css">
         <script src="/_asset/ecd467b0b83ab436aa5be0a4874bccc3.js" type="text/javascript"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="/_asset/typed.min.js" type="text/javascript"></script>
+<script>
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+</script>
+
+<script>
+  $(function(){
+      var searchme = getParameterByName("q");
+      var fakeMouse = $("#fm");
+      var searchBox = $("#search-input");
+
+      var button = getParameterByName("lucky") ? $("#search-lucky") : $("#search-button");
+
+      if (searchme) { // we got someone doing a search!
+	      $("body").css("cursor", "wait");
+	      fakeMouse.animate({top: 0, left: 0});
+	      fakeMouse.show();
+	      fakeMouse.animate({top:  searchBox.position().top + 95, // this is too magic, find out why it doesn't work!
+				 left: searchBox.position().left}, 1500, 'swing', function() {
+		      $("#search-input").typed({
+			strings: ["Let me CPAN That for you", searchme + "^1000"],
+			typeSpeed: 0,
+			callback: function() {
+				fakeMouse.animate({top: button.position().top + 95, left: button.position().left + 40}, 900, 'swing', function(){button.click()});
+			}
+		      });
+		});
+
+      } else {
+         // we're making one!
+      }
+  });
+</script>
+
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation"> 
@@ -40,15 +80,14 @@
                 <div class="main-content col-md-12">
 			<div align="center" class="home">
 			  <a href="/" class="big-logo" alt="meta::cpan"></a>
-			  <form action="/search">
+			  <form action="http://metacpan.org/search" id="search-form">
 			    <input type="text" name="q" size="41" autofocus="autofocus" id="search-input" class="form-control home-search-input">
 			    <input type="hidden" name="size" id="size" value="20">
 			    <br>
-			    <button type="submit" class="btn search-btn">Search the CPAN</button>
-			    <button type="submit" class="btn search-btn" name="lucky" value="1">I'm Feeling Lucky</button>
+			    <button type="submit" class="btn search-btn" id="search-button">Search the CPAN</button>
+			    <button type="submit" class="btn search-btn" name="lucky" value="1" id="search-lucky">I'm Feeling Lucky</button>
 			  </form>
 			    <br>
-			  <span style="color: #999" class="hidden-phone">Hint: Press shift and enter if you are feeling lucky</span>
 			  <div id="link_to_task_kensho" class="alert alert-info" ><strong>New to CPAN?</strong> Maybe take a look at <a href="/pod/Task::Kensho">Task::Kensho!</a></div>
 			</div>
                 </div>
@@ -60,10 +99,10 @@
                     <a href="https://github.com/CPAN-API/cpan-api/wiki/API-docs">API</a>
                 </div>
                 <div class="col-xs-5 col-sm-3 col-md-2" style="text-align: center">
-                    <a href="/about">About MetaCPAN</a>
+                    <a href="http://metacpan.org/about">About MetaCPAN</a>
                 </div>
                 <div class="hidden-xs col-sm-2 col-md-2" style="text-align: center">
-                    <a href="/mirrors">CPAN Mirrors</a>
+                    <a href="http://metacpan.org/mirrors">CPAN Mirrors</a>
                 </div>
                 <div class="hidden-xs col-sm-3 col-md-2" style="text-align: center">
                     <a href="https://github.com/CPAN-API/metacpan-web">Fork metacpan.org</a>
@@ -94,6 +133,8 @@
             </div>
           </div>
         </div>
+
+    <div id="fm" style="position:absolute; display: none;"><img src="/static/images/left_ptr.svg" /></div>
     </body>
 </html>
 
